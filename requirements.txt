@@ -1,2 +1,8 @@
-flask
-flask-cors
+streamlit==1.41.1
+pandas==2.2.3
+numpy==2.2.1
+plotly==5.24.1
+groq==0.12.0
+httpx<0.28.0
+openpyxl==3.1.5
+python-dotenv==1.0.1
