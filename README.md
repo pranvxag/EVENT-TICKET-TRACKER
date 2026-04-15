@@ -1,99 +1,163 @@
 # 🎟️ Smart Ticket Sales Tracking & Analytics System
 
-A full-featured ticket sales analytics dashboard built with Python, Streamlit, and Groq AI.
+A full-featured, AI-powered ticket sales analytics platform built with **Python**, **Streamlit**, **Plotly**, and **Groq API**. Upload your Excel or CSV file and instantly get interactive dashboards, section-wise breakdowns, channel performance, early-bird discount tracking, and an AI chatbot powered by LLaMA 3.
 
-## Features
+---
 
-- **Data Upload** — Upload `.xlsx` or `.csv` ticket data files
-- **Live Analytics** — Total revenue, tickets sold, available seats, section-wise breakdown
-- **Interactive Charts** — Daily trends, revenue share, booking mode comparison (Plotly)
-- **Visual Seat Map** — Color-coded grid showing sold vs. available seats by section
-- **Early Bird Discount** — Automatically disabled once 25% of tickets are sold
-- **AI Chatbot** — Powered by Groq API (LLaMA 3.3 70B) for intelligent sales insights
-- **Ticket Registry** — Searchable and filterable ticket list
-
-## Setup
+## 🚀 Quick Start
 
 ### 1. Clone the repository
 
 ```bash
-git clone <repo-url>
-cd ticket-tracker
+git clone https://github.com/your-username/ticket-analytics.git
+cd ticket-analytics
 ```
 
-### 2. Install dependencies
+### 2. Create and activate a virtual environment
+
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure the Groq API key
+### 4. Set up your environment variables
 
-Create a `.env` file in the `ticket-tracker/` directory:
+Create a `.env` file in the project root (already provided, but **never commit it**):
 
-```
+```env
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-Get your free API key at [console.groq.com](https://console.groq.com).
+Get a free Groq API key at [https://console.groq.com](https://console.groq.com).
 
-### 4. Run the app
+### 5. Run the application
 
 ```bash
 streamlit run app.py
 ```
 
-The app opens at `http://localhost:5000`.
+The app will open at **http://localhost:8501** in your browser.
 
-## Sample Data Format
+---
 
-Your Excel/CSV file should include these columns:
+## 📁 Project Structure
+
+```
+ticket-analytics/
+├── app.py                  # Main Streamlit application
+├── requirements.txt        # Python dependencies
+├── .env                    # API key (not committed to Git)
+├── .gitignore              # Prevents sensitive files from being pushed
+├── README.md               # This file
+└── sample_ticket_data.xlsx # Sample dataset for testing
+```
+
+---
+
+## 📊 Features
+
+| Feature | Description |
+|---|---|
+| **File Upload** | Supports `.xlsx`, `.xls`, and `.csv` ticket data files |
+| **Overview Dashboard** | Total revenue, tickets sold, fill rate, avg price |
+| **Section Analysis** | Bar + donut charts per section (VIP, Premium, etc.) |
+| **Date Trends** | Daily revenue area chart + cumulative growth curve |
+| **Channel Breakdown** | Sales by booking channel (Paytm, Online, Agent, etc.) |
+| **Day-of-Week Heatmap** | Identifies peak booking days |
+| **Top Customers** | Ranked by total spend |
+| **Early Bird Discount** | Auto-disabled after 25% of tickets are sold |
+| **AI Chatbot** | Groq-powered LLaMA 3 analyst answering natural language queries |
+| **Raw Data Explorer** | Search, filter, and download processed data as CSV |
+
+---
+
+## 🐍 Role of Python in This System
+
+Python is the backbone of the entire backend logic and data pipeline:
+
+### Data Ingestion
+`pandas.read_excel()` and `pandas.read_csv()` handle multi-format file loading with type inference. The `@st.cache_data` decorator caches parsed DataFrames so re-uploads don't re-process unnecessarily.
+
+### Data Normalization (`process_data`)
+A custom function maps messy real-world column names (e.g., `"booking_mode"`, `"date"`, `"status"`) to a standardized schema using string matching. It then coerces types: dates via `pd.to_datetime()`, prices via `pd.to_numeric()`, and boolean sold-status via whitelist matching.
+
+### Analytics Engine (`compute_analytics`)
+NumPy and Pandas power all KPI calculations:
+- **Revenue aggregation**: `df["Price"].sum()`, `.mean()`, `.median()`
+- **Group-by analytics**: `df.groupby("SeatSection").agg(...)` for section stats
+- **Time-series derivation**: `.dt.date`, `.dt.day_name()`, `.dt.isocalendar()` for trend data
+- **Cumulative metrics**: `.cumsum()` for growth curves
+- **Early Bird logic**: threshold = `total_tickets * 0.25`, compared against `total_sold`
+
+### Visualization
+Plotly Express and Graph Objects build all interactive charts. Data flows directly from Pandas DataFrames into Plotly figures with no intermediate files.
+
+### AI Context Building (`build_context_summary`)
+Python string formatting constructs a compact analytics snapshot that is injected as the system prompt for the Groq LLM, enabling context-aware answers grounded in real data.
+
+---
+
+## 📋 Expected Data Columns
+
+Your Excel/CSV file should include these columns (names are flexible — the app auto-maps common variations):
 
 | Column | Description | Example |
 |---|---|---|
-| `ticket_id` | Unique ticket identifier | T001 |
-| `seat_number` | Seat label | A1 |
-| `section` | Zone name | VIP, Premium, General, Balcony |
-| `price` | Ticket price (₹) | 5000 |
-| `date` | Sale date (YYYY-MM-DD) | 2024-12-01 |
-| `booking_mode` | online / offline | online |
-| `is_sold` | Boolean (True/False) | True |
+| `TicketID` | Unique ticket identifier | TKT-1001 |
+| `SeatSection` | Section category | VIP, Premium, General |
+| `Row` | Row number | 1, 2, 3 |
+| `SeatNumber` | Seat number within row | 5 |
+| `Price` | Ticket price in ₹ | 5500 |
+| `PurchaseDate` | Date of booking | 2024-11-15 |
+| `IsSold` | Whether ticket was sold | Yes / No |
+| `Channel` | Booking platform | Online, Paytm, Agent |
+| `CustomerName` | Buyer's name | Rahul Sharma |
 
-A sample file `sample_data.csv` is included for testing.
+---
 
-## Python Libraries Used
+## 🔒 Security
 
-| Library | Role |
+- The Groq API key is loaded from `.env` via `python-dotenv` — it is **never hardcoded**
+- `.env` is listed in `.gitignore` — it will not be pushed to GitHub
+- Streamlit Secrets (`secrets.toml`) can be used as an alternative on Streamlit Cloud
+
+---
+
+## 🔧 Tech Stack
+
+| Layer | Technology |
 |---|---|
-| **Pandas** | Data loading, cleaning, grouping, filtering, and transformation |
-| **NumPy** | Numerical computations — `np.sum()`, `np.cumsum()`, array operations |
-| **Streamlit** | Web UI framework — renders the dashboard in the browser |
-| **Plotly** | Interactive charts — bar charts, pie/donut charts, line overlays |
-| **Groq** | AI chatbot integration using LLaMA 3.3 70B model |
-| **openpyxl** | Reading `.xlsx` Excel files with pandas |
-| **python-dotenv** | Loading `GROQ_API_KEY` from a local `.env` file |
+| Frontend / UI | Streamlit 1.32+ |
+| Data Processing | Pandas 2.0, NumPy 1.26 |
+| Visualizations | Plotly 5.x |
+| AI Chatbot | Groq API (LLaMA 3 8B) |
+| Env Management | python-dotenv |
+| File Parsing | openpyxl, xlrd |
 
-## Python's Role in This System
+---
 
-Python powers the entire backend logic of this application:
+## 🔮 Future Enhancements
 
-- **Data Processing**: `pandas.read_csv()` / `read_excel()` loads raw files into DataFrames. Column normalization, type coercion, and boolean parsing are all done with pandas operations.
-- **Analysis**: NumPy arrays compute aggregate metrics — `np.sum()` calculates total revenue from sold ticket prices; `np.cumsum()` generates the cumulative trend line.
-- **Filtering**: Boolean indexing (`df[df['is_sold'] == True]`) isolates sold tickets; `.groupby('section')` aggregates per-zone stats.
-- **Early Bird Logic**: A threshold check (`sold / total < 0.25`) auto-disables early bird pricing once 25% capacity is reached.
-- **AI Context**: Python builds a structured natural-language context string from computed stats, which is sent to the Groq API alongside the user's question.
-- **Seat Map**: Python iterates over DataFrame rows to generate color-coded HTML seat cells dynamically.
+- **Forecasting**: ARIMA / Prophet model for revenue prediction
+- **Seat map visualization**: Interactive SVG seat map with status overlay
+- **Multi-event comparison**: Compare two events side-by-side
+- **Export to PDF**: Auto-generate analytics report
+- **Streamlit Cloud deployment**: One-click public deployment
+- **Email alerts**: Notify when early-bird threshold is crossed
 
-## Project Structure
+---
 
-```
-ticket-tracker/
-├── app.py              # Main Streamlit application
-├── requirements.txt    # Python dependencies
-├── sample_data.csv     # Sample dataset for testing
-├── README.md           # This file
-├── .env                # Groq API key (not committed)
-├── .gitignore          # Excludes .env, __pycache__, etc.
-└── .streamlit/
-    └── config.toml     # Streamlit server configuration
-```
+## 👤 Author
+
+**Pranav Agale**  
+B.Tech CSE · Vishwakarma University, Pune  
+[GitHub](https://github.com/prnanvxag) · [Hugging Face](https://huggingface.co/prnanvxag)
