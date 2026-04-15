@@ -44,6 +44,10 @@ Get a free Groq API key at [https://console.groq.com](https://console.groq.com).
 ```bash
 streamlit run app.py
 ```
+or
+```bash
+python -m streamlit run app.py
+```
 
 The app will open at **http://localhost:8501** in your browser.
 
