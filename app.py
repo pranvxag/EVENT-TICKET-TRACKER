@@ -50,7 +50,7 @@ section[data-testid="stSidebar"] {
     background: #0f0f1a !important;
     border-right: 1px solid rgba(255,255,255,0.07);
 }
-section[data-testid="stSidebar"] * { color: #e8e8f0 !important; }
+# section[data-testid="stSidebar"] * { color: #e8e8f0 !important; }
 
 /* Metric cards */
 [data-testid="stMetric"] {
@@ -546,10 +546,39 @@ Your role:
 # ─── SIDEBAR ─────────────────────────────────────────────────────────────────
 def render_sidebar(analytics: dict | None):
     with st.sidebar:
+                # ENHANCED HEADER WITH LIVE PROJECT 96 PILL BADGE
         st.markdown("""
         <div style='padding:10px 0 24px'>
-            <div style='font-family:Space Mono,monospace; font-size:10px; letter-spacing:2px; color:#6a6a8a; margin-bottom:6px;'>● LIVE SYSTEM</div>
-            <div style='font-family:Bebas Neue,sans-serif; font-size:28px; letter-spacing:3px; color:#c8f53d;'>TICKET<br>ANALYTICS</div>
+            <div style='
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(200,245,61,0.1);
+                border: 1px solid rgba(200,245,61,0.3);
+                color: #c8f53d;
+                font-family: "Space Mono", monospace;
+                font-size: 11px;
+                padding: 5px 12px;
+                border-radius: 100px;
+                margin-bottom: 14px;
+                letter-spacing: 1px;
+            '>
+                <span style='font-size: 8px; animation: blink 1.4s infinite;'>●</span> LIVE PROJECT 96
+            </div>
+            <style>
+                @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+            </style>
+            <div style='
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 42px;
+                letter-spacing: 2px;
+                line-height: 0.9;
+                color: #e8e8f0;
+            '>
+                <span style='color: #e8e8f0;'>EVENT</span><br>
+                <span style='color: #c8f53d; font-size: 48px;'>TICKET</span><br>
+                <span style='color: #e8e8f0;'>TRACKER</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -883,8 +912,9 @@ def render_landing():
 
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
+# ─── MAIN ─────────────────────────────────────────────────────────────────────
 def main():
-    # Header
+    # Header - SIMPLE (keep as is)
     st.markdown("""
     <div style='display:flex; align-items:center; gap:14px; margin-bottom:4px;'>
         <div style='font-size:32px;'>🎟️</div>
@@ -904,12 +934,43 @@ def main():
         st.session_state.df = None
         st.session_state.analytics = None
 
-    # Sidebar - ALWAYS render first
+    # ═══════════════════════════════════════════════════════════════════════════
+    # SIDEBAR - ENHANCED DESIGN (EVENT TICKET TRACKER)
+    # ═══════════════════════════════════════════════════════════════════════════
     with st.sidebar:
+        # ENHANCED HEADER WITH LIVE PROJECT 96 PILL BADGE
         st.markdown("""
         <div style='padding:10px 0 24px'>
-            <div style='font-family:Space Mono,monospace; font-size:10px; letter-spacing:2px; color:#6a6a8a; margin-bottom:6px;'>● LIVE SYSTEM</div>
-            <div style='font-family:Bebas Neue,sans-serif; font-size:28px; letter-spacing:3px; color:#c8f53d;'>TICKET<br>ANALYTICS</div>
+            <div style='
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(200,245,61,0.1);
+                border: 1px solid rgba(200,245,61,0.3);
+                color: #c8f53d;
+                font-family: "Space Mono", monospace;
+                font-size: 11px;
+                padding: 5px 12px;
+                border-radius: 100px;
+                margin-bottom: 14px;
+                letter-spacing: 1px;
+            '>
+                <span style='font-size: 8px; animation: blink 1.4s infinite;'>●</span> LIVE PROJECT 96
+            </div>
+            <style>
+                @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+            </style>
+            <div style='
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 42px;
+                letter-spacing: 2px;
+                line-height: 0.9;
+                color: #e8e8f0;
+            '>
+                <span style='color: #e8e8f0;'>EVENT</span><br>
+                <span style='color: #c8f53d; font-size: 48px;'>TICKET</span><br>
+                <span style='color: #e8e8f0;'>TRACKER</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
